@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import type { RankingEntry } from "../hooks/useLeagueData";
 
 interface RankingListProps {
@@ -9,41 +7,32 @@ interface RankingListProps {
 export const RankingList = ({ ranking }: RankingListProps) => {
   if (ranking.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-zinc-400 bg-zinc-100 px-4 py-6 text-center text-sm text-zinc-600">
+      <p className="py-8 text-center text-sm text-black/50">
         Add players and record a match to see the live table.
       </p>
     );
   }
 
   return (
-    <ol className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white shadow-sm">
+    <ol className="divide-y divide-black/5">
       {ranking.map((entry, index) => (
-        <li key={entry.player.id} className="flex items-center gap-4 px-4 py-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-50 font-semibold text-indigo-600">
+        <li key={entry.player.id} className="flex items-center gap-4 py-4 first:pt-0">
+          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded border border-black/20 bg-black/5 font-mono text-sm font-medium text-black">
             {index + 1}
           </span>
-          <div className="flex-1">
-            <p className="text-base font-semibold text-zinc-900">
+          <div className="min-w-0 flex-1">
+            <p className="text-base font-medium text-black">
               {entry.player.name}
             </p>
-            <p className="text-xs text-zinc-500">
+            <p className="mt-0.5 text-xs text-black/50">
               {entry.matchCount} matches • Start {entry.player.initialRating.toFixed(1)}
             </p>
           </div>
-          <div className="text-right">
-            <p className="font-mono text-lg font-semibold text-zinc-900">
+          <div className="flex-shrink-0 text-right">
+            <p className="font-mono text-lg font-medium text-black">
               {entry.rating.toFixed(1)}
             </p>
-            <p
-              className={clsx(
-                "font-mono text-sm",
-                entry.delta > 0
-                  ? "text-emerald-600"
-                  : entry.delta < 0
-                    ? "text-rose-600"
-                    : "text-zinc-500",
-              )}
-            >
+            <p className={`font-mono text-xs ${entry.delta > 0 ? "text-[#F7931A]" : "text-black/50"}`}>
               {formatDelta(entry.delta)}
             </p>
           </div>

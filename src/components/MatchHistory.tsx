@@ -13,7 +13,7 @@ export const MatchHistory = ({ matches }: MatchHistoryProps) => {
 
   if (matches.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-zinc-400 bg-zinc-100 px-4 py-6 text-center text-sm text-zinc-600">
+      <p className="py-8 text-center text-sm text-black/50">
         Every match you record appears here with the STR rating changes.
       </p>
     );
@@ -40,31 +40,28 @@ export const MatchHistory = ({ matches }: MatchHistoryProps) => {
   };
 
   return (
-    <ol className="space-y-3">
+    <ol className="divide-y divide-black/5">
       {reversed.map((entry) => {
         const { match, players, delta, ratingAfter } = entry;
         const winner = players.a?.id === match.winnerId ? players.a : players.b;
         const loser = winner && winner.id === players.a?.id ? players.b : players.a;
 
         return (
-          <li
-            key={match.id}
-            className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">
+          <li key={match.id} className="py-5 first:pt-0">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium uppercase tracking-wider text-black/50">
                   {new Date(match.playedAt).toLocaleString()}
                 </p>
-                <p className="text-base font-semibold text-zinc-900">
+                <p className="mt-2 text-base font-medium text-black">
                   {winner?.name ?? "Winner"}
-                  <span className="ml-2 text-sm font-normal text-zinc-500">
+                  <span className="ml-2 text-sm font-normal text-black/60">
                     defeated {loser?.name ?? "Opponent"}
                   </span>
                 </p>
               </div>
               <button
-                className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-rose-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-200"
+                className="flex-shrink-0 p-2 text-black/30 transition-colors hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
                 onClick={() => handleDelete(match.id)}
                 title="Delete match"
                 type="button"
@@ -73,27 +70,33 @@ export const MatchHistory = ({ matches }: MatchHistoryProps) => {
               </button>
             </div>
 
-            <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-lg bg-zinc-50 px-3 py-2">
-                <dt className="text-xs uppercase tracking-wide text-zinc-500">
+            <dl className="mt-4 grid grid-cols-2 gap-4">
+              <div className="rounded border border-black/10 bg-black/5 p-3">
+                <dt className="text-xs font-medium uppercase tracking-wide text-black/50">
                   {players.a?.name ?? "Player A"}
                 </dt>
-                <dd className="font-mono text-zinc-800">
-                  {formatDelta(delta.a)} → {ratingAfter.a?.toFixed(1) ?? "-"}
+                <dd className="mt-1.5 font-mono text-sm text-black">
+                  <span className={delta.a && delta.a > 0 ? "text-[#F7931A]" : ""}>
+                    {formatDelta(delta.a)}
+                  </span>{" "}
+                  → {ratingAfter.a?.toFixed(1) ?? "-"}
                 </dd>
               </div>
-              <div className="rounded-lg bg-zinc-50 px-3 py-2">
-                <dt className="text-xs uppercase tracking-wide text-zinc-500">
+              <div className="rounded border border-black/10 bg-black/5 p-3">
+                <dt className="text-xs font-medium uppercase tracking-wide text-black/50">
                   {players.b?.name ?? "Player B"}
                 </dt>
-                <dd className="font-mono text-zinc-800">
-                  {formatDelta(delta.b)} → {ratingAfter.b?.toFixed(1) ?? "-"}
+                <dd className="mt-1.5 font-mono text-sm text-black">
+                  <span className={delta.b && delta.b > 0 ? "text-[#F7931A]" : ""}>
+                    {formatDelta(delta.b)}
+                  </span>{" "}
+                  → {ratingAfter.b?.toFixed(1) ?? "-"}
                 </dd>
               </div>
             </dl>
 
             {match.note && (
-              <p className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
+              <p className="mt-4 rounded border border-black/10 bg-black/5 px-3 py-2 text-sm text-black/70">
                 {match.note}
               </p>
             )}

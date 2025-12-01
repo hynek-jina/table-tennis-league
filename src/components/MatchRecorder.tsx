@@ -110,19 +110,21 @@ export const MatchRecorder = ({
 
   if (players.length < 2) {
     return (
-      <p className="rounded-xl border border-dashed border-zinc-400 bg-zinc-100 px-4 py-6 text-center text-sm text-zinc-600">
+      <p className="py-8 text-center text-sm text-black/50">
         Add at least two players to record a match.
       </p>
     );
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="block text-sm font-medium text-zinc-700">
-          Player A
+    <form className="space-y-6" onSubmit={handleSubmit}>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="block">
+          <span className="mb-2 block text-xs font-medium uppercase tracking-wide text-black/60">
+            Player A
+          </span>
           <select
-            className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            className="w-full border-b border-black/20 bg-transparent px-1 py-2.5 text-base text-black transition-colors focus:border-[#F7931A] focus:outline-none"
             value={playerAId}
             onChange={(event) => {
               const value = event.target.value as PlayerId | "";
@@ -144,10 +146,12 @@ export const MatchRecorder = ({
             ))}
           </select>
         </label>
-        <label className="block text-sm font-medium text-zinc-700">
-          Player B
+        <label className="block">
+          <span className="mb-2 block text-xs font-medium uppercase tracking-wide text-black/60">
+            Player B
+          </span>
           <select
-            className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            className="w-full border-b border-black/20 bg-transparent px-1 py-2.5 text-base text-black transition-colors focus:border-[#F7931A] focus:outline-none"
             value={playerBId}
             onChange={(event) => {
               const value = event.target.value as PlayerId | "";
@@ -171,37 +175,41 @@ export const MatchRecorder = ({
         </label>
       </div>
 
-      <fieldset className="rounded-xl border border-zinc-200 bg-white px-4 py-3">
-        <legend className="px-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <fieldset className="border-t border-black/10 pt-5">
+        <legend className="mb-4 px-0 text-xs font-medium uppercase tracking-wide text-black/60">
           Winner
         </legend>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {[playerAId, playerBId]
             .map((id) => (id ? playersById.get(id) : undefined))
             .filter(Boolean)
             .map((player) => (
               <label
                 key={player!.id}
-                className="flex items-center gap-3 text-sm text-zinc-800"
+                className="flex cursor-pointer items-center gap-3 text-sm text-black"
               >
                 <input
                   checked={winnerId === player!.id}
-                  className="h-4 w-4 rounded-full border border-zinc-400 text-indigo-600 focus:ring-indigo-500"
+                  className="h-4 w-4 border-2 border-black/30 text-[#F7931A] transition-colors focus:ring-2 focus:ring-[#F7931A]/50"
                   name="winner"
                   onChange={() => setWinnerId(player!.id)}
                   type="radio"
                   value={player!.id}
                 />
-                {player!.name}
+                <span className={winnerId === player!.id ? "font-medium" : ""}>
+                  {player!.name}
+                </span>
               </label>
             ))}
         </div>
       </fieldset>
 
-      <label className="block text-sm font-medium text-zinc-700">
-        Optional note
+      <label className="block">
+        <span className="mb-2 block text-xs font-medium uppercase tracking-wide text-black/60">
+          Optional note
+        </span>
         <textarea
-          className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          className="w-full border-b border-black/20 bg-transparent px-1 py-2.5 text-base text-black placeholder:text-black/30 transition-colors focus:border-[#F7931A] focus:outline-none"
           maxLength={1000}
           placeholder="Score, highlights, etc."
           rows={2}
@@ -211,30 +219,36 @@ export const MatchRecorder = ({
       </label>
 
       {preview && playerAId && playerBId && (
-        <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3 text-sm text-indigo-700">
-          <p className="font-semibold">Projected change</p>
-          <p>
-            {playersById.get(playerAId as PlayerId)?.name ?? "Player A"}:
-            <span className="ml-1 font-mono">
-              {formatDelta(preview.deltaA)} ({preview.ratingA.toFixed(1)} →
-              {(preview.ratingA + preview.deltaA).toFixed(1)})
-            </span>
+        <div className="rounded border border-black/10 bg-black/5 p-4 text-sm">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-black/60">
+            Projected change
           </p>
-          <p>
-            {playersById.get(playerBId as PlayerId)?.name ?? "Player B"}:
-            <span className="ml-1 font-mono">
-              {formatDelta(preview.deltaB)} ({preview.ratingB.toFixed(1)} →
-              {(preview.ratingB + preview.deltaB).toFixed(1)})
-            </span>
-          </p>
+          <div className="space-y-2 font-mono text-xs text-black/80">
+            <p>
+              {playersById.get(playerAId as PlayerId)?.name ?? "Player A"}:{" "}
+              <span className={preview.deltaA > 0 ? "text-[#F7931A]" : ""}>
+                {formatDelta(preview.deltaA)}
+              </span>{" "}
+              ({preview.ratingA.toFixed(1)} → {(preview.ratingA + preview.deltaA).toFixed(1)})
+            </p>
+            <p>
+              {playersById.get(playerBId as PlayerId)?.name ?? "Player B"}:{" "}
+              <span className={preview.deltaB > 0 ? "text-[#F7931A]" : ""}>
+                {formatDelta(preview.deltaB)}
+              </span>{" "}
+              ({preview.ratingB.toFixed(1)} → {(preview.ratingB + preview.deltaB).toFixed(1)})
+            </p>
+          </div>
         </div>
       )}
 
-      {error && <p className="text-sm text-rose-600">{error}</p>}
+      {error && (
+        <p className="text-sm text-black/60">{error}</p>
+      )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-end pt-2">
         <button
-          className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-300/40 transition-colors hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+          className="bg-[#F7931A] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#F7931A]/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
           type="submit"
         >
           Record match

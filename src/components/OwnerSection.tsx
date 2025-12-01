@@ -3,7 +3,12 @@ import { EvoluIdenticon } from "@evolu/react-web";
 import { IconKey, IconSparkles, IconTrash } from "@tabler/icons-react";
 import { use, useState } from "react";
 
-import { authResult, formatTypeError, ownerProfiles, useEvolu } from "../evolu/client";
+import {
+  authResult,
+  formatTypeError,
+  ownerProfiles,
+  useEvolu,
+} from "../evolu/client";
 
 export const OwnerSection = () => {
   const evolu = useEvolu();
@@ -37,35 +42,37 @@ export const OwnerSection = () => {
 
   const handleResetClick = () => {
     const confirmed = window.confirm(
-      "Reset local data? This keeps your mnemonic but wipes the device copy.",
+      "Reset local data? This keeps your mnemonic but wipes the device copy."
     );
     if (!confirmed) return;
     void evolu.resetAppOwner();
   };
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+    <div className="space-y-6">
+      <div className="rounded border border-black/10 bg-black/5 p-4">
         <div className="flex items-center gap-3">
           {appOwner && <EvoluIdenticon id={appOwner.id} />}
-          <div className="flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium uppercase tracking-wider text-black/50">
               Sync identity
             </p>
-            <p className="text-base font-semibold text-zinc-900">
+            <p className="mt-1 text-base font-medium text-black">
               {authResult?.username ?? "Guest"}
             </p>
-            <p className="text-xs font-mono text-zinc-500">{appOwner?.id}</p>
+            <p className="mt-1 truncate text-xs font-mono text-black/40">
+              {appOwner?.id}
+            </p>
           </div>
         </div>
-        <div className="mt-4 space-y-3 text-sm text-zinc-600">
+        <div className="mt-4 space-y-2 text-sm text-black/60">
           <p>
             Evolu keeps your data in device SQLite first and syncs end-to-end
             encrypted when you restore with the same mnemonic on another
             browser.
           </p>
           {ownerProfiles.length > 1 && (
-            <p className="rounded-lg bg-indigo-50/70 px-3 py-2 text-indigo-700">
+            <p className="mt-3 rounded border border-black/10 bg-white px-3 py-2 text-black/70">
               This device has {ownerProfiles.length} registered profiles. Use
               passkeys to switch quickly.
             </p>
@@ -75,38 +82,47 @@ export const OwnerSection = () => {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <button
-          className="flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-3 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100"
+          className="flex items-center justify-center gap-2 border border-black/20 bg-white px-3 py-3 text-sm font-medium text-black transition-colors hover:border-black hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
           onClick={() => setShowMnemonic(!showMnemonic)}
           type="button"
         >
           <IconKey className="h-4 w-4" />
-          {showMnemonic ? "Hide mnemonic" : "Show mnemonic"}
+          <span className="hidden sm:inline">
+            {showMnemonic ? "Hide mnemonic" : "Show mnemonic"}
+          </span>
+          <span className="sm:hidden">Mnemonic</span>
         </button>
         <button
-          className="flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100"
+          className="flex items-center justify-center gap-2 border border-black/20 bg-white px-3 py-3 text-sm font-medium text-black transition-colors hover:border-black hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
           onClick={handleRestoreClick}
           type="button"
         >
           <IconSparkles className="h-4 w-4" />
-          Restore data
+          <span className="hidden sm:inline">Restore data</span>
+          <span className="sm:hidden">Restore</span>
         </button>
         <button
-          className="flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-3 text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-100"
+          className="flex items-center justify-center gap-2 border border-black/20 bg-white px-3 py-3 text-sm font-medium text-black transition-colors hover:border-black hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
           onClick={handleResetClick}
           type="button"
         >
           <IconTrash className="h-4 w-4" />
-          Reset device
+          <span className="hidden sm:inline">Reset device</span>
+          <span className="sm:hidden">Reset</span>
         </button>
       </div>
 
       {showMnemonic && appOwner?.mnemonic && (
-        <div className="rounded-xl border border-dashed border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-800">
-          <p className="mb-2 font-semibold">Your mnemonic (store securely)</p>
-          <p className="font-mono text-xs leading-relaxed">{appOwner.mnemonic}</p>
-          <div className="mt-3 flex justify-end gap-2">
+        <div className="rounded border border-black/10 bg-black/5 p-4 text-sm">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-black/60">
+            Your mnemonic (store securely)
+          </p>
+          <p className="font-mono text-xs leading-relaxed text-black/80">
+            {appOwner.mnemonic}
+          </p>
+          <div className="mt-4 flex justify-end gap-2">
             <button
-              className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500"
+              className="bg-[#F7931A] px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#F7931A]/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
               onClick={() => {
                 if (appOwner?.mnemonic) {
                   void navigator.clipboard.writeText(appOwner.mnemonic);
@@ -117,7 +133,7 @@ export const OwnerSection = () => {
               Copy
             </button>
             <button
-              className="rounded-lg bg-zinc-200 px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-300"
+              className="border border-black/20 bg-white px-4 py-1.5 text-xs font-medium text-black transition-colors hover:border-black hover:bg-black/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
               onClick={handleExportDatabase}
               type="button"
             >
