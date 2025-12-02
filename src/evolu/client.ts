@@ -33,7 +33,7 @@ export const authResult = await localAuth.getOwner({ service });
 
 export const evolu = Evolu.createEvolu(evoluReactWebDeps)(Schema, {
   name: Evolu.SimpleName.orThrow(
-    `${service}-${authResult?.owner?.id ?? "guest"}`,
+    `${service}-${authResult?.owner?.id ?? "guest"}`
   ),
   encryptionKey: authResult?.owner?.encryptionKey,
   externalAppOwner: authResult?.owner,
@@ -68,7 +68,7 @@ export const formatTypeError = Evolu.createFormatTypeError<
 evolu.subscribeError(() => {
   const error = evolu.getError();
   if (!error) return;
-  alert("Evolu error occurred. See console for details.");
+  alert(`Evolu error occurred. ${error}`);
   // eslint-disable-next-line no-console
   console.error(error);
 });
@@ -82,7 +82,7 @@ export const playersQuery = evolu.createQuery((db) =>
     .$narrowType<{ name: Evolu.kysely.NotNull }>()
     .where("initialRating", "is not", null)
     .$narrowType<{ initialRating: Evolu.kysely.NotNull }>()
-    .orderBy("createdAt"),
+    .orderBy("createdAt")
 );
 
 export type PlayerRow = typeof playersQuery.Row;
@@ -109,7 +109,7 @@ export const matchesQuery = evolu.createQuery((db) =>
     .where("playedAt", "is not", null)
     .$narrowType<{ playedAt: Evolu.kysely.NotNull }>()
     .orderBy("playedAt")
-    .orderBy("createdAt"),
+    .orderBy("createdAt")
 );
 
 export type MatchRow = typeof matchesQuery.Row;
