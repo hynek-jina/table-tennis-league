@@ -1,4 +1,5 @@
 import * as Evolu from "@evolu/common";
+import { IconTrophy } from "@tabler/icons-react";
 import { FormEvent, useMemo, useState } from "react";
 
 import { formatTypeError, useEvolu } from "../evolu/client";
@@ -175,34 +176,64 @@ export const MatchRecorder = ({
         </label>
       </div>
 
-      <fieldset className="border-t border-black/10 pt-5">
-        <legend className="mb-4 px-0 text-xs font-medium uppercase tracking-wide text-black/60">
+      <div className="border-t border-black/10 pt-5">
+        <p className="mb-4 text-xs font-medium uppercase tracking-wide text-black/60">
           Winner
-        </legend>
-        <div className="space-y-3">
+        </p>
+        <div className="grid grid-cols-2 gap-3">
           {[playerAId, playerBId]
             .map((id) => (id ? playersById.get(id) : undefined))
             .filter(Boolean)
-            .map((player) => (
-              <label
-                key={player!.id}
-                className="flex cursor-pointer items-center gap-3 text-sm text-black"
-              >
-                <input
-                  checked={winnerId === player!.id}
-                  className="h-5 w-5 border-2 border-black/20 text-[#F7931A] transition-all focus:ring-2 focus:ring-[#F7931A]/30"
-                  name="winner"
-                  onChange={() => setWinnerId(player!.id)}
-                  type="radio"
-                  value={player!.id}
-                />
-                <span className={winnerId === player!.id ? "font-medium" : ""}>
-                  {player!.name}
-                </span>
-              </label>
-            ))}
+            .map((player) => {
+              const isSelected = winnerId === player!.id;
+              return (
+                <button
+                  key={player!.id}
+                  type="button"
+                  onClick={() => setWinnerId(player!.id)}
+                  className={`
+                    relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 px-4 py-5 text-center transition-all
+                    ${
+                      isSelected
+                        ? "border-[#F7931A] bg-[#F7931A]/10 shadow-lg shadow-[#F7931A]/20"
+                        : "border-black/10 bg-white hover:border-black/20 hover:bg-black/5"
+                    }
+                  `}
+                >
+                  <div
+                    className={`
+                      flex h-10 w-10 items-center justify-center rounded-full transition-all
+                      ${
+                        isSelected
+                          ? "bg-[#F7931A] text-white"
+                          : "bg-black/5 text-black/30"
+                      }
+                    `}
+                  >
+                    <IconTrophy size={22} stroke={2} />
+                  </div>
+                  <span
+                    className={`
+                      text-lg transition-all
+                      ${
+                        isSelected
+                          ? "font-bold text-[#F7931A]"
+                          : "font-medium text-black/70"
+                      }
+                    `}
+                  >
+                    {player!.name}
+                  </span>
+                  {isSelected && (
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#F7931A]">
+                      Winner
+                    </span>
+                  )}
+                </button>
+              );
+            })}
         </div>
-      </fieldset>
+      </div>
 
       <label className="block">
         <span className="mb-2 block text-xs font-medium uppercase tracking-wide text-black/60">

@@ -1,0 +1,2 @@
+prompt:
+Enhance the UI of Record match section by changing the Winner choice from radio buttons to big buttons - make those two buttons side by side and use the full width of the main container. Use resonable height. Make the names on the buttons reasonable big. It has to be clear who is selected as the winner. Make it obvious by colours, highlight of the button, text on the button and icon.
