@@ -1,12 +1,13 @@
-import { Suspense, useMemo } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 
-import { AddPlayerForm } from "./components/AddPlayerForm";
-import { MatchHistory } from "./components/MatchHistory";
-import { MatchRecorder } from "./components/MatchRecorder";
-import { OwnerSection } from "./components/OwnerSection";
-import { RankingList } from "./components/RankingList";
-import { EvoluProvider, evolu, PlayerId } from "./evolu/client";
-import { useLeagueData } from "./hooks/useLeagueData";
+import { AddPlayerForm } from "../components/AddPlayerForm";
+import { MatchHistory } from "../components/MatchHistory";
+import { MatchRecorder } from "../components/MatchRecorder";
+import { OwnerSection } from "../components/OwnerSection";
+import { RankingList } from "../components/RankingList";
+import type { PlayerId } from "../evolu/client";
+import { useLeagueData } from "../hooks/useLeagueData";
 
 const LeagueDashboard = () => {
   const { players, ranking, matches } = useLeagueData();
@@ -77,14 +78,6 @@ const LeagueDashboard = () => {
   );
 };
 
-const App = () => {
-  return (
-    <EvoluProvider value={evolu}>
-      <Suspense fallback={<div className="p-6 text-center text-black/40">Loading…</div>}>
-        <LeagueDashboard />
-      </Suspense>
-    </EvoluProvider>
-  );
-};
-
-export default App;
+export const Route = createFileRoute("/")({
+  component: LeagueDashboard,
+});

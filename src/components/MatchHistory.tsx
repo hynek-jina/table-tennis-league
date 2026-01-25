@@ -6,9 +6,10 @@ import type { MatchSummary } from "../hooks/useLeagueData";
 
 interface MatchHistoryProps {
   readonly matches: ReadonlyArray<MatchSummary>;
+  readonly readonly?: boolean;
 }
 
-export const MatchHistory = ({ matches }: MatchHistoryProps) => {
+export const MatchHistory = ({ matches, readonly = false }: MatchHistoryProps) => {
   const { update } = useEvolu();
 
   if (matches.length === 0) {
@@ -60,14 +61,16 @@ export const MatchHistory = ({ matches }: MatchHistoryProps) => {
                   </span>
                 </p>
               </div>
-              <button
-                className="flex-shrink-0 p-2 text-black/30 transition-colors hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
-                onClick={() => handleDelete(match.id)}
-                title="Delete match"
-                type="button"
-              >
-                <IconTrash className="h-4 w-4" />
-              </button>
+              {!readonly && (
+                <button
+                  className="flex-shrink-0 p-2 text-black/30 transition-colors hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F7931A]/50"
+                  onClick={() => handleDelete(match.id)}
+                  title="Delete match"
+                  type="button"
+                >
+                  <IconTrash className="h-4 w-4" />
+                </button>
+              )}
             </div>
 
             <dl className="mt-4 grid grid-cols-2 gap-4">
