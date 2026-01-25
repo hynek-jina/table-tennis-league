@@ -5,6 +5,7 @@ import { AddPlayerForm } from "../components/AddPlayerForm";
 import { CollapsibleSection } from "../components/CollapsibleSection";
 import { MatchHistory } from "../components/MatchHistory";
 import { MatchRecorder } from "../components/MatchRecorder";
+import { Navigation } from "../components/Navigation";
 import { OwnerSection } from "../components/OwnerSection";
 import { RankingList } from "../components/RankingList";
 import type { PlayerId } from "../evolu/client";
@@ -24,7 +25,8 @@ const LeagueDashboard = () => {
   const matchCount = matches.length;
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+    <>
+      <div className="mx-auto w-full max-w-4xl px-4 py-6 pb-20 sm:px-6 sm:py-8">
       <header className="mb-10">
         <h1 className="text-3xl font-light text-black sm:text-4xl">
           Table Tennis League
@@ -78,7 +80,9 @@ const LeagueDashboard = () => {
           <OwnerSection />
         </CollapsibleSection>
       </div>
-    </div>
+      </div>
+      <Navigation />
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 
+import { BackNavigation } from "../components/BackNavigation";
 import { CollapsibleSection } from "../components/CollapsibleSection";
 import { MatchHistory } from "../components/MatchHistory";
 import { MatchRecorder } from "../components/MatchRecorder";
@@ -20,7 +21,8 @@ const MatchPage = () => {
   }, [ranking]);
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+    <>
+      <div className="mx-auto w-full max-w-4xl px-4 py-6 pb-20 sm:px-6 sm:py-8">
       <header className="mb-10">
         <h1 className="text-3xl font-light text-black sm:text-4xl">
           Record Match
@@ -53,7 +55,9 @@ const MatchPage = () => {
           <RankingList ranking={ranking} />
         </CollapsibleSection>
       </div>
-    </div>
+      </div>
+      <BackNavigation />
+    </>
   );
 };
 
