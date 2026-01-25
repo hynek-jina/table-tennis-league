@@ -11,13 +11,17 @@ import userEvent from "@testing-library/user-event";
 import { useEvolu } from "../evolu/client";
 import { AddPlayerForm } from "./AddPlayerForm";
 
+type InsertResult = { ok: true } | { ok: false; error: { type: string } };
+
 describe("AddPlayerForm", () => {
-  const mockInsert = vi.fn(() => ({ ok: true }));
+  const mockInsert = vi.fn<
+    (table: string, data: unknown, options?: { onComplete?: () => void }) => InsertResult
+  >(() => ({ ok: true }));
 
   beforeEach(() => {
     vi.mocked(useEvolu).mockReturnValue({
       insert: mockInsert,
-    } as any);
+    } as unknown as ReturnType<typeof useEvolu>);
     mockInsert.mockClear();
   });
 
@@ -91,10 +95,12 @@ describe("AddPlayerForm", () => {
     const user = userEvent.setup();
     let onCompleteCallback: (() => void) | undefined;
 
-    mockInsert.mockImplementation((_table, _data, options: any) => {
-      onCompleteCallback = options?.onComplete;
-      return { ok: true };
-    });
+    mockInsert.mockImplementation(
+      (_table: string, _data: unknown, options?: { onComplete?: () => void }) => {
+        onCompleteCallback = options?.onComplete;
+        return { ok: true };
+      }
+    );
 
     render(<AddPlayerForm />);
 
@@ -144,7 +150,7 @@ describe("AddPlayerForm", () => {
     mockInsert.mockReturnValue({
       ok: false,
       error: { type: "MinLength" },
-    });
+    } as { ok: false; error: { type: string } });
 
     render(<AddPlayerForm />);
 
@@ -214,7 +220,7 @@ describe("AddPlayerForm", () => {
     mockInsert.mockReturnValueOnce({
       ok: false,
       error: { type: "ValidationError" },
-    });
+    } as { ok: false; error: { type: string } });
 
     render(<AddPlayerForm />);
 

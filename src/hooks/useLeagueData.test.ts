@@ -8,33 +8,28 @@ vi.mock("../evolu/client", () => ({
 }));
 
 import { renderHook } from "@testing-library/react";
-import type { MatchRow, PlayerRow } from "../evolu/client";
+import type { MatchRow, PlayerId } from "../evolu/client";
 import { useQuery } from "../evolu/client";
 import { K_FACTOR, useLeagueData } from "./useLeagueData";
+import { createMockMatch, createMockPlayer } from "../test/helpers";
 
 describe("useLeagueData", () => {
-  const mockPlayers: PlayerRow[] = [
-    {
-      id: "player1" as any,
+  const mockPlayers = [
+    createMockPlayer({
+      id: "player1" as PlayerId,
       name: "Alice",
       initialRating: 1000,
-      createdAt: "2024-01-01T00:00:00.000Z" as any,
-      isDeleted: false as any,
-    },
-    {
-      id: "player2" as any,
+    }),
+    createMockPlayer({
+      id: "player2" as PlayerId,
       name: "Bob",
       initialRating: 1000,
-      createdAt: "2024-01-01T00:00:00.000Z" as any,
-      isDeleted: false as any,
-    },
-    {
-      id: "player3" as any,
+    }),
+    createMockPlayer({
+      id: "player3" as PlayerId,
       name: "Charlie",
       initialRating: 1200,
-      createdAt: "2024-01-01T00:00:00.000Z" as any,
-      isDeleted: false as any,
-    },
+    }),
   ];
 
   it("should initialize players with their initial ratings", () => {
@@ -53,17 +48,14 @@ describe("useLeagueData", () => {
   });
 
   it("should calculate rating changes correctly after a match", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any, // Alice (1000)
-        playerBId: "player2" as any, // Bob (1000)
-        winnerId: "player1" as any, // Alice wins
-        playedAt: "2024-01-02T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId,
+        playerBId: "player2" as PlayerId,
+        winnerId: "player1" as PlayerId,
+        playedAt: "2024-01-02T00:00:00.000Z",
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -89,17 +81,14 @@ describe("useLeagueData", () => {
   });
 
   it("should apply K-factor of 16 for rating changes", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any, // Alice (1000)
-        playerBId: "player2" as any, // Bob (1000)
-        winnerId: "player1" as any, // Alice wins
-        playedAt: "2024-01-02T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice (1000)
+        playerBId: "player2" as PlayerId, // Bob (1000)
+        winnerId: "player1" as PlayerId, // Alice wins
+        playedAt: "2024-01-02T00:00:00.000Z",
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -121,17 +110,14 @@ describe("useLeagueData", () => {
   });
 
   it("should calculate expected scores correctly for different ratings", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any, // Alice (1000)
-        playerBId: "player3" as any, // Charlie (1200)
-        winnerId: "player1" as any, // Alice wins (upset!)
-        playedAt: "2024-01-02T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice (1000)
+        playerBId: "player3" as PlayerId, // Charlie (1200)
+        winnerId: "player1" as PlayerId, // Alice wins (upset!)
+        playedAt: "2024-01-02T00:00:00.000Z",
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -151,27 +137,21 @@ describe("useLeagueData", () => {
   });
 
   it("should process matches in chronological order", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match2" as any,
-        playerAId: "player1" as any,
-        playerBId: "player2" as any,
-        winnerId: "player1" as any,
-        playedAt: "2024-01-03T00:00:00.000Z" as any, // Later
-        note: null,
-        createdAt: "2024-01-03T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any,
-        playerBId: "player2" as any,
-        winnerId: "player2" as any,
-        playedAt: "2024-01-02T00:00:00.000Z" as any, // Earlier
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match2" as MatchRow["id"],
+        playerAId: "player1" as PlayerId,
+        playerBId: "player2" as PlayerId,
+        winnerId: "player1" as PlayerId,
+        playedAt: "2024-01-03T00:00:00.000Z", // Later
+      }),
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId,
+        playerBId: "player2" as PlayerId,
+        winnerId: "player2" as PlayerId,
+        playedAt: "2024-01-02T00:00:00.000Z", // Earlier
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -188,27 +168,21 @@ describe("useLeagueData", () => {
   });
 
   it("should calculate total delta from initial rating", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any, // Alice
-        playerBId: "player2" as any, // Bob
-        winnerId: "player1" as any,
-        playedAt: "2024-01-02T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
-      {
-        id: "match2" as any,
-        playerAId: "player1" as any, // Alice
-        playerBId: "player2" as any, // Bob
-        winnerId: "player1" as any,
-        playedAt: "2024-01-03T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-03T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice
+        playerBId: "player2" as PlayerId, // Bob
+        winnerId: "player1" as PlayerId,
+        playedAt: "2024-01-02T00:00:00.000Z",
+      }),
+      createMockMatch({
+        id: "match2" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice
+        playerBId: "player2" as PlayerId, // Bob
+        winnerId: "player1" as PlayerId,
+        playedAt: "2024-01-03T00:00:00.000Z",
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -238,17 +212,14 @@ describe("useLeagueData", () => {
   });
 
   it("should sort ranking by rating (highest first)", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any, // Alice (1000)
-        playerBId: "player3" as any, // Charlie (1200)
-        winnerId: "player1" as any, // Alice wins, should overtake Charlie
-        playedAt: "2024-01-02T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice (1000)
+        playerBId: "player3" as PlayerId, // Charlie (1200)
+        winnerId: "player1" as PlayerId, // Alice wins, should overtake Charlie
+        playedAt: "2024-01-02T00:00:00.000Z",
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -268,27 +239,21 @@ describe("useLeagueData", () => {
   });
 
   it("should track match count for each player", () => {
-    const matches: MatchRow[] = [
-      {
-        id: "match1" as any,
-        playerAId: "player1" as any, // Alice
-        playerBId: "player2" as any, // Bob
-        winnerId: "player1" as any,
-        playedAt: "2024-01-02T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-02T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
-      {
-        id: "match2" as any,
-        playerAId: "player1" as any, // Alice
-        playerBId: "player3" as any, // Charlie
-        winnerId: "player3" as any,
-        playedAt: "2024-01-03T00:00:00.000Z" as any,
-        note: null,
-        createdAt: "2024-01-03T00:00:00.000Z" as any,
-        isDeleted: false as any,
-      },
+    const matches = [
+      createMockMatch({
+        id: "match1" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice
+        playerBId: "player2" as PlayerId, // Bob
+        winnerId: "player1" as PlayerId,
+        playedAt: "2024-01-02T00:00:00.000Z",
+      }),
+      createMockMatch({
+        id: "match2" as MatchRow["id"],
+        playerAId: "player1" as PlayerId, // Alice
+        playerBId: "player3" as PlayerId, // Charlie
+        winnerId: "player3" as PlayerId,
+        playedAt: "2024-01-03T00:00:00.000Z",
+      }),
     ];
 
     vi.mocked(useQuery).mockImplementation((query: any) => {
@@ -323,11 +288,11 @@ describe("useLeagueData", () => {
     const { result } = renderHook(() => useLeagueData());
 
     expect(result.current.playersById.size).toBe(3);
-    expect(result.current.playersById.get("player1" as any)?.name).toBe(
+    expect(result.current.playersById.get("player1" as PlayerId)?.name).toBe(
       "Alice"
     );
-    expect(result.current.playersById.get("player2" as any)?.name).toBe("Bob");
-    expect(result.current.playersById.get("player3" as any)?.name).toBe(
+    expect(result.current.playersById.get("player2" as PlayerId)?.name).toBe("Bob");
+    expect(result.current.playersById.get("player3" as PlayerId)?.name).toBe(
       "Charlie"
     );
   });

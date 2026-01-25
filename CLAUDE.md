@@ -18,6 +18,7 @@ yarn preview          # Preview production build locally
 ### Linting and Quality
 ```bash
 yarn lint             # Run ESLint on the codebase
+yarn typecheck        # Run TypeScript type checking (REQUIRED after code changes)
 ```
 
 ### Testing
@@ -99,12 +100,46 @@ Component patterns used throughout:
 3. The `_uiPreference` table (underscore prefix) stores local-only data that doesn't sync
 4. Use `onComplete` callback in insert/update operations for post-mutation actions (e.g., resetting forms)
 
-### Type Safety
+### Type Safety and Branded Types
 
-- TypeScript strict mode is enabled
-- Evolu provides branded types (e.g., `PlayerId`, `MatchId`) that prevent mixing different ID types
-- Query result types are inferred from the schema (e.g., `PlayerRow`, `MatchRow`)
-- Use `$narrowType<>()` in queries to refine types when filtering out nullable fields
+TypeScript strict mode is enabled with Evolu's branded type system for enhanced type safety.
+
+**Evolu Branded Types**:
+
+Evolu uses TypeScript's branded types pattern via the `Brand<B>` interface to distinguish otherwise identical base types. This prevents accidental type confusion at compile time.
+
+- **ID types**: Created with factory functions (e.g., `Evolu.id("Player")` creates `PlayerId` type)
+  ```typescript
+  export const PlayerId = Evolu.id("Player");
+  export type PlayerId = typeof PlayerId.Type;
+  ```
+- **Validation schemas**: Built-in branded validators ensure data integrity
+  - `Evolu.NonEmptyTrimmedString100`: String with min 1, max 100 chars, trimmed
+  - `Evolu.NonNegativeNumber`: Number >= 0
+  - `Evolu.DateIso`: ISO 8601 date string
+  - `Evolu.SqliteBoolean`: SQLite boolean (0 or 1)
+
+**Type Patterns**:
+
+- **Query result types**: Inferred from queries, not schemas (e.g., `PlayerRow`, `MatchRow`)
+  ```typescript
+  export const playersQuery = evolu.createQuery((db) => ...);
+  export type PlayerRow = typeof playersQuery.Row;
+  ```
+- **Type narrowing**: Use `$narrowType<>()` in queries to refine types when filtering nullable fields
+- **Production code**: Pass plain values to `insert()`/`update()` - Evolu validates at runtime
+- **Boundary assertions**: Only use `as` type assertions at DOM boundaries (e.g., `event.target.value as PlayerId`)
+
+**Testing with Branded Types**:
+
+Test code requires special handling for branded types since we bypass Evolu's validation:
+
+- **Test helpers**: Centralized mock data creators in `src/test/helpers.ts`
+  - `createMockPlayer()`: Accepts plain types, returns `PlayerRow`
+  - `createMockMatch()`: Accepts plain types, returns `MatchRow`
+- **Single assertion per object**: Helpers use one `as PlayerRow` cast instead of per-field assertions
+- **Why it's acceptable**: Test data doesn't go through validation; helpers are themselves validated by tests
+- **Pattern matches Evolu docs**: Direct casting "is unsafe, so [factory functions] must be unit-tested"
 
 ### PWA Configuration
 
@@ -144,14 +179,29 @@ The project uses **Vitest** with **React Testing Library** for testing:
 
 Run tests in watch mode during development for instant feedback on changes.
 
+### Type Checking
+
+**CRITICAL**: TypeScript strict mode is enabled and type checking must pass before committing changes.
+
+- Run `yarn typecheck` after every code change
+- **No `any` types allowed** without explicit justification
+- **Test mock data**: Use test helpers from `src/test/helpers.ts`:
+  - `createMockPlayer({ id, name, initialRating })` for player fixtures
+  - `createMockMatch({ id, playerAId, playerBId, winnerId, playedAt })` for match fixtures
+  - Helpers accept plain JavaScript types and handle branded type assertions internally
+  - This centralizes "as" assertions to single location per object instead of per field
+- **Mock function typing**: Define explicit union types for mock returns (e.g., `type InsertResult = { ok: true } | { ok: false; error: { type: string } }`)
+- Evolu query results (PlayerRow, MatchRow) do not include `isDeleted` - it's filtered by queries automatically
+
 ## Development Guidelines
 
 ### Working with Evolu
 
 - Always use the pre-defined queries (`playersQuery`, `matchesQuery`, etc.) rather than writing raw SQL
-- For mutations, use the typed schema objects - Evolu will validate at runtime
+- For mutations, pass plain JavaScript values to `insert()`/`update()` - Evolu validates at runtime using branded type schemas
 - Handle validation errors using `formatTypeError()` for consistent error messages
 - Remember that `_uiPreference` table is local-only (not synced)
+- **Branded types**: See "Type Safety and Branded Types" section for details on Evolu's type system and testing patterns
 
 ### Adding New Features
 
@@ -161,6 +211,7 @@ Run tests in watch mode during development for instant feedback on changes.
 - Use TanStack Router's file-based routing for new pages
 - Follow existing component patterns for consistency (especially CollapsibleSection for grouping content)
 - Write tests for new business logic and critical components (place `.test.ts` files alongside source files)
+- **Always run `yarn typecheck` after code changes** - zero TypeScript errors required
 
 ### Styling Conventions
 

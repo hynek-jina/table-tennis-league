@@ -8,33 +8,30 @@ vi.mock("../evolu/client", () => ({
 
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { PlayerId, PlayerRow } from "../evolu/client";
+import type { PlayerId } from "../evolu/client";
 import { useEvolu } from "../evolu/client";
 import { MatchRecorder } from "./MatchRecorder";
+import { createMockPlayer } from "../test/helpers";
+
+type InsertResult = { ok: true } | { ok: false; error: { type: string } };
 
 describe("MatchRecorder", () => {
-  const mockPlayers: PlayerRow[] = [
-    {
+  const mockPlayers = [
+    createMockPlayer({
       id: "player1" as PlayerId,
       name: "Alice",
       initialRating: 1000,
-      createdAt: "2024-01-01T00:00:00.000Z" as any,
-      isDeleted: false as any,
-    },
-    {
+    }),
+    createMockPlayer({
       id: "player2" as PlayerId,
       name: "Bob",
       initialRating: 1200,
-      createdAt: "2024-01-01T00:00:00.000Z" as any,
-      isDeleted: false as any,
-    },
-    {
+    }),
+    createMockPlayer({
       id: "player3" as PlayerId,
       name: "Charlie",
       initialRating: 800,
-      createdAt: "2024-01-01T00:00:00.000Z" as any,
-      isDeleted: false as any,
-    },
+    }),
   ];
 
   const mockCurrentRatings = new Map<PlayerId, number>([
@@ -43,12 +40,14 @@ describe("MatchRecorder", () => {
     ["player3" as PlayerId, 850],
   ]);
 
-  const mockInsert = vi.fn(() => ({ ok: true }));
+  const mockInsert = vi.fn<
+    (table: string, data: unknown, options?: { onComplete?: () => void }) => InsertResult
+  >(() => ({ ok: true }));
 
   beforeEach(() => {
     vi.mocked(useEvolu).mockReturnValue({
       insert: mockInsert,
-    } as any);
+    } as unknown as ReturnType<typeof useEvolu>);
     mockInsert.mockClear();
   });
 
@@ -204,10 +203,12 @@ describe("MatchRecorder", () => {
     const user = userEvent.setup();
     let onCompleteCallback: (() => void) | undefined;
 
-    mockInsert.mockImplementation((_table, _data, options: any) => {
-      onCompleteCallback = options?.onComplete;
-      return { ok: true };
-    });
+    mockInsert.mockImplementation(
+      (_table: string, _data: unknown, options?: { onComplete?: () => void }) => {
+        onCompleteCallback = options?.onComplete;
+        return { ok: true };
+      }
+    );
 
     render(
       <MatchRecorder players={mockPlayers} currentRatings={mockCurrentRatings} />
@@ -255,7 +256,7 @@ describe("MatchRecorder", () => {
     mockInsert.mockReturnValue({
       ok: false,
       error: { type: "ValidationError" },
-    });
+    } as { ok: false; error: { type: string } });
 
     render(
       <MatchRecorder players={mockPlayers} currentRatings={mockCurrentRatings} />

@@ -1,70 +1,70 @@
 {
-  "hash": "6e8c42c8",
+  "hash": "797e819c",
   "configHash": "701bdb72",
-  "lockfileHash": "4a0c87dd",
-  "browserHash": "334a5c3f",
+  "lockfileHash": "c2e0da9c",
+  "browserHash": "dfe524b4",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "677602b5",
+      "fileHash": "ce78110c",
       "needsInterop": true
     },
     "react-dom": {
       "src": "../../node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "c9ade01f",
+      "fileHash": "062f8ef1",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "c489187f",
+      "fileHash": "87ad342f",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "7b55b3be",
+      "fileHash": "fd30d4f0",
       "needsInterop": true
     },
     "@evolu/common": {
       "src": "../../node_modules/@evolu/common/dist/src/index.js",
       "file": "@evolu_common.js",
-      "fileHash": "795ce201",
+      "fileHash": "726124fc",
       "needsInterop": false
     },
     "@evolu/react": {
       "src": "../../node_modules/@evolu/react/dist/index.js",
       "file": "@evolu_react.js",
-      "fileHash": "14fc2a5a",
+      "fileHash": "10a87ed5",
       "needsInterop": false
     },
     "@tabler/icons-react": {
       "src": "../../node_modules/@tabler/icons-react/dist/esm/tabler-icons-react.mjs",
       "file": "@tabler_icons-react.js",
-      "fileHash": "3678072f",
+      "fileHash": "dfee9f8b",
       "needsInterop": false
     },
     "@tanstack/react-router": {
       "src": "../../node_modules/@tanstack/react-router/dist/esm/index.dev.js",
       "file": "@tanstack_react-router.js",
-      "fileHash": "20bbfb10",
+      "fileHash": "b1854e64",
       "needsInterop": false
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "e023d711",
+      "fileHash": "dd3682ee",
       "needsInterop": true
     }
   },
   "chunks": {
-    "chunk-VBV23SZR": {
-      "file": "chunk-VBV23SZR.js"
-    },
     "chunk-MFTVS33O": {
       "file": "chunk-MFTVS33O.js"
+    },
+    "chunk-VBV23SZR": {
+      "file": "chunk-VBV23SZR.js"
     },
     "chunk-OFNMVIHK": {
       "file": "chunk-OFNMVIHK.js"

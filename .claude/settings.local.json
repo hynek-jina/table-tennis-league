@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(yarn typecheck:*)",
+      "Bash(yarn test:*)"
     ]
   }
 }
